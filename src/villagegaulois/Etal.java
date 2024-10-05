@@ -27,38 +27,51 @@ public class Etal {
 
 	public String libererEtal() {
 		etalOccupe = false;
-		StringBuilder chaine = new StringBuilder(
-				"Le vendeur " + vendeur.getNom() + " quitte son �tal, ");
-		int produitVendu = quantiteDebutMarche - quantite;
-		if (produitVendu > 0) {
-			chaine.append(
-					"il a vendu " + produitVendu + " parmi " + produit + ".\n");
-		} else {
-			chaine.append("il n'a malheureusement rien vendu.\n");
+		StringBuilder chaine = new StringBuilder("Le vendeur ");
+		try {
+			chaine.append(vendeur.getNom() + " quitte son étal, ");
+			int produitVendu = quantiteDebutMarche - quantite;
+			if (produitVendu > 0) {
+				chaine.append(
+						"il a vendu " + produitVendu + " parmi " + quantiteDebutMarche + " " + produit + ".\n");
+			} else {
+				chaine.append("il n'a malheureusement rien vendu.\n");
+			}
+		}catch (NullPointerException e) {
+			chaine.append("ne possède pas d'étal sur le marché.\n");
 		}
 		return chaine.toString();
 	}
 
 	public String afficherEtal() {
 		if (etalOccupe) {
-			return "L'�tal de " + vendeur.getNom() + " est garni de " + quantite
+			return "L'étal de " + vendeur.getNom() + " est garni de " + quantite
 					+ " " + produit + "\n";
 		}
-		return "L'�tal est libre";
+		return "L'étal est libre";
 	}
 
 	public String acheterProduit(int quantiteAcheter, Gaulois acheteur) {
-		if (etalOccupe) {
+		
+		if(quantiteAcheter<1) {
+			throw new IllegalArgumentException("la quantité doit être positive");
+		}
+		
+		if(!isEtalOccupe()) {
+			throw new IllegalStateException("l'étal n'est pas occupé");
+		}
+		
+		try {
 			StringBuilder chaine = new StringBuilder();
 			chaine.append(acheteur.getNom() + " veut acheter " + quantiteAcheter
-					+ " " + produit + " � " + vendeur.getNom());
+					+ " " + produit + " à" + vendeur.getNom());
 			if (quantite == 0) {
 				chaine.append(", malheureusement il n'y en a plus !");
 				quantiteAcheter = 0;
 			}
 			if (quantiteAcheter > quantite) {
 				chaine.append(", comme il n'y en a plus que " + quantite + ", "
-						+ acheteur.getNom() + " vide l'�tal de "
+						+ acheteur.getNom() + " vide l'étal de "
 						+ vendeur.getNom() + ".\n");
 				quantiteAcheter = quantite;
 				quantite = 0;
@@ -70,8 +83,9 @@ public class Etal {
 						+ vendeur.getNom() + "\n");
 			}
 			return chaine.toString();
+		} catch(NullPointerException e) {
+			return null;
 		}
-		return null;
 	}
 
 	public boolean contientProduit(String produit) {
