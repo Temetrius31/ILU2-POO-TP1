@@ -46,6 +46,9 @@ public class Village {
 
 	public String afficherVillageois() {
 		StringBuilder chaine = new StringBuilder();
+		if(chef==null) {
+			throw new VillageSansChefException("ce village n'a pas de chef");
+		}
 		if (nbVillageois < 1) {
 			chaine.append("Il n'y a encore aucun habitant au village du chef "
 					+ chef.getNom() + ".\n");

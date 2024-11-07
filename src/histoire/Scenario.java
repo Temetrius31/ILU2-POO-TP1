@@ -1,10 +1,14 @@
 package histoire;
 
+import java.io.Closeable;
+import java.util.Scanner;
+
 import personnages.Chef;
 import personnages.Druide;
 import personnages.Gaulois;
 import villagegaulois.Etal;
 import villagegaulois.Village;
+import villagegaulois.VillageSansChefException;
 
 public class Scenario {
 
@@ -24,8 +28,19 @@ public class Scenario {
 		village.ajouterHabitant(obelix);
 		village.ajouterHabitant(druide);
 		village.ajouterHabitant(abraracourcix);
-		village.afficherVillageois();
-		
+		try {
+			village.afficherVillageois();
+		}
+		catch(VillageSansChefException e){
+			System.out.println("Entrez le nom du chef:");
+			Scanner scan=new Scanner(System.in);
+			String nomChef=scan.next();
+			System.out.println("Entrez la force du chef");
+			int force=scan.nextInt();
+			Chef chef=new Chef(nomChef,force,village);
+			village.setChef(chef);
+			village.afficherVillageois();
+		}
 		System.out.println(village.rechercherVendeursProduit("fleurs"));
 		System.out.println(village.installerVendeur(bonemine, "fleurs", 20));
 		System.out.println(village.rechercherVendeursProduit("fleurs"));
